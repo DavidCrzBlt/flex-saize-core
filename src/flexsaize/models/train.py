@@ -4,12 +4,14 @@ from typing import Dict, List, Optional, Tuple
 import os
 import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
-import mlflow
+
 from mlflow.tracking import MlflowClient
 
 from flexsaize.data.preprocessor import DataPreprocessor, PreprocessConfig
 from flexsaize.data.splitter import GroupedSplitter, SplitConfig
 from flexsaize.models.evaluate import Evaluator
+
+from mlflow import sklearn as mlflow_sklearn  
 
 @dataclass
 class TrainConfig:
@@ -120,6 +122,7 @@ class RFRegressorTrainer:
         res_test = Evaluator.compute(y_te, y_pred_test, targets=list(self.cfg.y_cols))
 
         # 4) MLflow logging
+        import mlflow
         mlflow.set_experiment(self.cfg.experiment_name)
         with mlflow.start_run(run_name=self.cfg.run_name, experiment_id=self.experiment_id):
             if self.cfg.run_tags:

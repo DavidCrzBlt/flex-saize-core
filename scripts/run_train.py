@@ -1,6 +1,8 @@
-# scripts/run_train.py
 import argparse, subprocess, os
 from flexsaize.models.train import TrainConfig, RFRegressorTrainer
+import os
+os.environ.setdefault("MLFLOW_TRACKING_URI", "http://192.168.100.8:5000")
+
 
 def short_git_sha():
     try:

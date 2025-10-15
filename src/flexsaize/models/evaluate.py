@@ -21,7 +21,7 @@ class Evaluator:
         for i, col in enumerate(targets):
             yt = y_true[col].to_numpy()
             yp = y_pred[:, i] if y_pred.ndim == 2 else y_pred  # por si fuera 1D
-            rmse = root_mean_squared_error(yt, yp, squared=False)
+            rmse = root_mean_squared_error(yt, yp)
             mae  = mean_absolute_error(yt, yp)
             r2   = r2_score(yt, yp)
             per[col] = {"rmse": float(rmse), "mae": float(mae), "r2": float(r2)}
