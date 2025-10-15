@@ -1,7 +1,7 @@
 from flexsaize.data.preprocessor import DataPreprocessor
 
 def main():
-    input_path = "data/data1.csv"
+    input_path = "data/data.csv"
     output_path = "data/data_clean.csv"
 
     pre = DataPreprocessor(input_path,output_path)
