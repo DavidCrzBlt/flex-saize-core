@@ -1,0 +1,12 @@
+stages:
+  train:
+    cmd: python scripts/run_train.py --raw-input data/data1.csv --out-clean 
+      data/data_clean.csv
+    deps:
+    - data/data1.csv
+    - flexsaize/data/evaluate.py
+    - flexsaize/data/preprocessor.py
+    - flexsaize/data/splitter.py
+    - flexsaize/data/train.py
+    outs:
+    - data/data_clean.csv
