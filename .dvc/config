@@ -1,0 +1,4 @@
+[core]
+    remote = rpi
+['remote "rpi"']
+    url = ssh://DavidPi@192.168.100.8:/home/DavidPi/Documents/Proyectos/flexsaize_mlflow_lab/dvcstore
