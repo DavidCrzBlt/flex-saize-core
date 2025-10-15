@@ -1,0 +1,31 @@
+schema: '2.0'
+stages:
+  train:
+    cmd: python scripts/run_train.py --raw-input data/data.csv --out-clean 
+      data/data_clean.csv
+    deps:
+    - path: data/data.csv
+      hash: md5
+      md5: 3d75724c9203afd60443d36a76bc03ef
+      size: 87423
+    - path: src/flexsaize/data/preprocessor.py
+      hash: md5
+      md5: 24d734092cf112e7a2e5c089caffcfea
+      size: 4912
+    - path: src/flexsaize/data/splitter.py
+      hash: md5
+      md5: d45b6ed02517d70164fdd7476e61fcff
+      size: 1985
+    - path: src/flexsaize/models/evaluate.py
+      hash: md5
+      md5: 44177eb7564a0144b022f4f59263488e
+      size: 1825
+    - path: src/flexsaize/models/train.py
+      hash: md5
+      md5: f0ef291b65162e012ba48fd90b4af6ac
+      size: 5939
+    outs:
+    - path: data/data_clean.csv
+      hash: md5
+      md5: 05a9e9d1c2f4ed592983b4b4c012bc5f
+      size: 201073
