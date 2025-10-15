@@ -1,13 +1,13 @@
 schema: '2.0'
 stages:
   train:
-    cmd: python scripts/run_train.py --raw-input data/data2.csv --out-clean 
+    cmd: python scripts/run_train.py --raw-input data/data.csv --out-clean 
       data/data_clean.csv
     deps:
-    - path: data/data2.csv
+    - path: data/data.csv
       hash: md5
-      md5: 9f6166826262082efb34b70dafefd5e8
-      size: 72608
+      md5: 3d75724c9203afd60443d36a76bc03ef
+      size: 87423
     - path: src/flexsaize/data/preprocessor.py
       hash: md5
       md5: 24d734092cf112e7a2e5c089caffcfea
@@ -27,5 +27,5 @@ stages:
     outs:
     - path: data/data_clean.csv
       hash: md5
-      md5: ecd64b378babc229f2ccd9c266789f1a
-      size: 170971
+      md5: 05a9e9d1c2f4ed592983b4b4c012bc5f
+      size: 201073
