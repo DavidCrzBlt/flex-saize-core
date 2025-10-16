@@ -1,19 +1,19 @@
 stages:
   preprocess:
-    cmd: python scripts/run_preprocess.py --input data/data.csv --output data/data_clean.csv
+    cmd: python scripts/run_preprocess.py --input-path data/data.csv --output-path data/data_clean.csv
     deps:
     - data/data.csv
     - src/flexsaize/data/preprocessor.py
     - scripts/run_preprocess.py
     outs:
     - data/data_clean.csv
-    - data/data_clean_withmeta.csv
+  #   - data/data_clean_withmeta.csv
 
-  train:
-    cmd: python scripts/run_train.py --raw-input data/data_clean_withmeta.csv
-    deps:
-    - data/data_clean_withmeta.csv
-    - src/flexsaize/models/train.py
-    - scripts/run_train.py
-    outs:
-    - models/rf_model.pkl
+  # train:
+  #   cmd: python scripts/run_train.py --raw-input data/data_clean_withmeta.csv
+  #   deps:
+  #   - data/data_clean_withmeta.csv
+  #   - src/flexsaize/models/train.py
+  #   - scripts/run_train.py
+  #   outs:
+  #   - models/rf_model.pkl
