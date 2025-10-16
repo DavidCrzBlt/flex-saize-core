@@ -10,14 +10,14 @@ stages:
       size: 86516
     - path: scripts/run_preprocess.py
       hash: md5
-      md5: 8946af5462958ede1b7eba3cc1a69cd5
-      size: 1212
+      md5: c25166959e7d9f19b7c2dca161a7684c
+      size: 1606
     - path: src/flexsaize/data/preprocessor.py
       hash: md5
-      md5: 96d1a17342635db541cdffd455b0b90e
-      size: 2076
+      md5: eb6770d005d981bfdb8010ef899cc839
+      size: 9946
     outs:
     - path: data/data_clean.csv
       hash: md5
-      md5: 3d75724c9203afd60443d36a76bc03ef
-      size: 87423
+      md5: 29903640b1a11d97d1e2872ec864dbb1
+      size: 176052
