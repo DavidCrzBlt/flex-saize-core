@@ -1,8 +1,8 @@
 import argparse
 import yaml
-import json
 import mlflow
 import os
+import datetime
 from dotenv import load_dotenv
 from flexsaize.train.model_trainer import ModelTrainer
 
@@ -67,8 +67,20 @@ def main():
     # Si el experimento no existe, MLflow lo crea automáticamente.
     mlflow.set_experiment("Flexsaize_Training_Models_Pipeline")
 
+    timestamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+    run_name = f"{args.model_type}__{timestamp}"
+
     # Esto envuelve todo el trabajo de preprocesamiento en un registro de MLflow
-    with mlflow.start_run(run_name="Models_Training_Stage") as run:
+    with mlflow.start_run(run_name=run_name) as run:
+
+        dvc_tags = {
+            "git_commit": os.environ.get("DVC_EXP_GIT_COMMIT"),
+            "dvc_version": os.environ.get("DVC_EXP_NAME"),
+            "dvc_baseline_rev": os.environ.get("DVC_BASELINE_REV"),
+        }
+        # Filtramos valores None y registramos como tags en MLflow
+        dvc_tags = {k: v for k, v in dvc_tags.items() if v}
+        mlflow.set_tags(dvc_tags)
 
         # Registrar la configuración usada
         mlflow.log_params(args.hyperparams)

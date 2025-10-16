@@ -36,6 +36,4 @@ stages:
     params:
       - train.active_hyperparams
       - train.model_type
-    metrics:
-      - metrics.json:
-          cache: false
+

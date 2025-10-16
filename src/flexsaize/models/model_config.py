@@ -5,10 +5,16 @@ from sklearn.ensemble import HistGradientBoostingRegressor
 from sklearn.svm import SVR
 import xgboost as xgb
 
-MODEL_MAPPER = {
+MODEL_CLASSES = {
     "DecisionTree": DecisionTreeRegressor,
     'RandomForest': RandomForestRegressor,
     'HGB Regressor': HistGradientBoostingRegressor,
-    'XGBoost': MultiOutputRegressor(xgb.XGBRegressor()), 
-    'SVR': MultiOutputRegressor(SVR()),
+    'XGBoost': xgb.XGBRegressor, 
+    'SVR': SVR,
+}
+
+# Para modelos Multi-Output, este es el MultiOutputRegressor CLASE.
+MODEL_MAPPER = {
+    "RandomForest": RandomForestRegressor,      # Soporte nativo
+    "XGBoost": MultiOutputRegressor,             # Usamos la CLASE MultiOutputRegressor
 }

@@ -1,9 +1,11 @@
 import pandas as pd
 import numpy as np
-from sklearn.metrics import r2_score, root_mean_squared_error, mean_absolute_error
 import mlflow
 
-from flexsaize.models.model_config import MODEL_MAPPER
+from sklearn.metrics import r2_score, root_mean_squared_error, mean_absolute_error
+from sklearn.multioutput import MultiOutputRegressor
+
+from flexsaize.models.model_config import MODEL_MAPPER, MODEL_CLASSES
 
 class ModelTrainer:
     def __init__(self, config):
@@ -43,6 +45,12 @@ class ModelTrainer:
         # Intentamos leer el df para train            
         try:
             self.df_train = pd.read_csv(self.input_path_train)
+
+            for col in self.df_train.select_dtypes(include=['int64']).columns:
+                # Solo conviértelas si no son la columna objetivo
+                if col not in self.target_col:
+                    self.df_train[col] = self.df_train[col].astype('Int64')
+
             self.X_train = self.df_train.drop(columns=self.target_col)
             self.y_train = self.df_train[self.target_col].copy()
         except FileNotFoundError:
@@ -62,6 +70,12 @@ class ModelTrainer:
         # Intentamos leer el df para val
         try:
             self.df_val = pd.read_csv(self.input_path_val)
+
+            for col in self.df_val.select_dtypes(include=['int64']).columns:
+                # Solo conviértelas si no son la columna objetivo
+                if col not in self.target_col:
+                    self.df_val[col] = self.df_val[col].astype('Int64')
+
             self.X_val = self.df_val.drop(columns=self.target_col)
             self.y_val = self.df_val[self.target_col].copy()
         except FileNotFoundError:
@@ -81,6 +95,12 @@ class ModelTrainer:
         # Intentamos leer el df para test            
         try:
             self.df_test = pd.read_csv(self.input_path_test)
+
+            for col in self.df_test.select_dtypes(include=['int64']).columns:
+                # Solo conviértelas si no son la columna objetivo
+                if col not in self.target_col:
+                    self.df_test[col] = self.df_test[col].astype('Int64')
+
             self.X_test = self.df_test.drop(columns=self.target_col)
             self.y_test = self.df_test[self.target_col].copy()
         except FileNotFoundError:
@@ -112,7 +132,18 @@ class ModelTrainer:
         ModelClass = MODEL_MAPPER[self.model_type]
 
         try:
-            self.model = ModelClass(**self.hyperparams)
+            if ModelClass is MultiOutputRegressor:
+                # 1. Creamos una instancia del modelo base (ej. XGBRegressor)
+                BaseModel = MODEL_CLASSES[self.model_type]
+                base_model_instance = BaseModel(**self.hyperparams) 
+                
+                # 2. Inicializamos el envoltorio usando la instancia del modelo base
+                # De esta forma los hyperparams se pasan al modelo base, no al MultiOutputRegressor
+                self.model = ModelClass(base_model_instance) 
+                
+            else:
+                # Para modelos nativos (ej. RandomForest)
+                self.model = ModelClass(**self.hyperparams)
 
         except TypeError as e:
             print(f"ERROR: Hiperparámetros inválidos para el modelo {self.model_type}. Detalles: {e}")
@@ -213,10 +244,13 @@ class ModelTrainer:
         # 4. Registrar el Modelo (Artefacto)
         if self.model is not None:
             print("Registrando el modelo entrenado como artefacto...")
+
+            input_example = self.X_train.head(1)
             
             mlflow.sklearn.log_model(
                 sk_model=self.model,
-                artifact_path="model",  # Carpeta donde se guardará el modelo
+                name="model",  # Carpeta donde se guardará el modelo
+                input_example = input_example,
                 registered_model_name=f"{self.model_type}_Model" # Nombre en el Model Registry (Opcional pero recomendable)
             )
             print("Modelo registrado con éxito.")
