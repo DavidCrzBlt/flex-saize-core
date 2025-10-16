@@ -51,7 +51,7 @@ stages:
   train:
     cmd: "python scripts/run_train.py --input-path-train data/train.csv --input-path-val
       data/val.csv --input-path-test data/test.csv --target-col x,y,width,height --model-type
-      XGBoost\n"
+      RandomForest\n"
     deps:
     - path: data/test.csv
       hash: md5
@@ -88,4 +88,4 @@ stages:
             n_estimators: 200
             learning_rate: 0.05
             max_depth: 5
-        train.model_type: XGBoost
+        train.model_type: RandomForest
