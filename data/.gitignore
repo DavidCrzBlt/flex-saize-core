@@ -1,2 +1,5 @@
 /data.csv
 /data_clean.csv
+/train.csv
+/val.csv
+/test.csv

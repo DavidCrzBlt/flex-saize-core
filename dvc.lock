@@ -21,3 +21,30 @@ stages:
       hash: md5
       md5: 29903640b1a11d97d1e2872ec864dbb1
       size: 176052
+  split:
+    cmd: python scripts/run_split.py --input-path-clean data/data_clean.csv 
+      --output-path-train data/train.csv --output-path-val data/val.csv 
+      --output-path-test data/test.csv --group-column file --test-size 0.1 
+      --val-size 0.1
+    deps:
+    - path: data/data_clean.csv
+      hash: md5
+      md5: 29903640b1a11d97d1e2872ec864dbb1
+      size: 176052
+    - path: scripts/run_split.py
+      hash: md5
+      md5: 56c232f53673032b693eaba1537befb1
+      size: 2760
+    outs:
+    - path: data/test.csv
+      hash: md5
+      md5: 1d84bc2bb54e37cb5f203724f03ed348
+      size: 18376
+    - path: data/train.csv
+      hash: md5
+      md5: 613190868c420e004428876b21a4136f
+      size: 124633
+    - path: data/val.csv
+      hash: md5
+      md5: 187639cc08a15465f73a558acd3b9018
+      size: 15157
