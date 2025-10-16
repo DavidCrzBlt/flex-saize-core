@@ -48,3 +48,44 @@ stages:
       hash: md5
       md5: 187639cc08a15465f73a558acd3b9018
       size: 15157
+  train:
+    cmd: "python scripts/run_train.py --input-path-train data/train.csv --input-path-val
+      data/val.csv --input-path-test data/test.csv --target-col x,y,width,height --model-type
+      XGBoost\n"
+    deps:
+    - path: data/test.csv
+      hash: md5
+      md5: 1d84bc2bb54e37cb5f203724f03ed348
+      size: 18376
+    - path: data/train.csv
+      hash: md5
+      md5: 613190868c420e004428876b21a4136f
+      size: 124633
+    - path: data/val.csv
+      hash: md5
+      md5: 187639cc08a15465f73a558acd3b9018
+      size: 15157
+    - path: scripts/run_train.py
+      hash: md5
+      md5: 9094e08d85f118d81e4f13d5c2cb77fd
+      size: 3875
+    - path: src/flexsaize/models/model_config.py
+      hash: md5
+      md5: 89bdfa6e7a3affc55eb8db9ef9fcc31f
+      size: 728
+    - path: src/flexsaize/train/model_trainer.py
+      hash: md5
+      md5: 11eec3dcd82643258f335f646e4bca42
+      size: 11573
+    params:
+      params.yaml:
+        train.active_hyperparams:
+          RandomForest:
+            n_estimators: 100
+            max_depth: 10
+            random_state: 42
+          XGBoost:
+            n_estimators: 200
+            learning_rate: 0.05
+            max_depth: 5
+        train.model_type: XGBoost
