@@ -7,8 +7,16 @@ stages:
     - scripts/run_preprocess.py
     outs:
     - data/data_clean.csv
-  #   - data/data_clean_withmeta.csv
-
+  
+  split:
+    cmd: python scripts/run_split.py --input-path-clean data/data_clean.csv --output-path-train data/train.csv --output-path-val data/val.csv --output-path-test data/test.csv --group-column file --test-size 0.1 --val-size 0.1
+    deps:
+      - data/data_clean.csv 
+      - scripts/run_split.py
+    outs:
+      - data/train.csv 
+      - data/val.csv   
+      - data/test.csv  
   # train:
   #   cmd: python scripts/run_train.py --raw-input data/data_clean_withmeta.csv
   #   deps:

@@ -1,8 +1,14 @@
 import argparse
 import mlflow
+import os
+from dotenv import load_dotenv
 from flexsaize.data.preprocessor import DataPreprocessor
 
 def main():
+
+    # Cargamos la variable de entorno
+    load_dotenv()
+    tracking_uri = os.environ.get("MLFLOW_TRACKING_URI")
 
     # Agregamos los parámetros de nuestra clase
     parser = argparse.ArgumentParser(description="Preprocesamiento de  datos")
@@ -13,6 +19,12 @@ def main():
     
     # Aquí creamos el objeto args
     args = parser.parse_args()
+
+    # FUERZA LA URI DE SEGUIMIENTO DENTRO DEL SCRIPT
+    mlflow.set_tracking_uri(tracking_uri)
+
+    # Si el experimento no existe, MLflow lo crea automáticamente.
+    mlflow.set_experiment("Flexsaize_Preprocessing_Pipeline")
 
     # Esto envuelve todo el trabajo de preprocesamiento en un registro de MLflow
     with mlflow.start_run(run_name="Data_Preprocess_Stage") as run:

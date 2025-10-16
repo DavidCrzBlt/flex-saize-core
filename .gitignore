@@ -2,3 +2,5 @@ mlruns/
 myvirtualenv/
 *__pycache__*
 *.egg-info/
+variables.txt
+.env
