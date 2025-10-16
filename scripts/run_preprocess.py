@@ -1,13 +1,19 @@
-from flexsaize.data.preprocessor import DataPreprocessor
+import argparse
+from flexsaize.data.preprocessor import DataPreprocessor, PreprocessConfig
 
 def main():
-    input_path = "data/data.csv"
-    output_path = "data/data_clean.csv"
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--input", required=True)
+    parser.add_argument("--output", required=True)
+    args = parser.parse_args()
 
-    pre = DataPreprocessor(input_path,output_path)
-    pre.load_data()
-    pre.remove_empty_rows()
-    pre.save_cleaned()
+    cfg = PreprocessConfig(
+        input_path=args.input,
+        output_path=args.output
+    )
+
+    pre = DataPreprocessor(cfg)
+    df_tr, groups = pre.run()
 
 if __name__ == "__main__":
     main()

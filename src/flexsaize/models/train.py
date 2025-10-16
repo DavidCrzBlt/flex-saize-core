@@ -2,6 +2,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Dict, List, Optional, Tuple
 import os
+import subprocess
 import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
 
@@ -40,12 +41,40 @@ class TrainConfig:
 
     def __post_init__(self):
         if self.experiment_tags is None:
+            # Intentar obtener el tag actual de Git
+            try:
+                git_tag = subprocess.check_output(
+                    ["git", "describe", "--tags"], stderr=subprocess.DEVNULL
+                ).decode().strip()
+            except subprocess.CalledProcessError:
+                # Si no hay tag, usar el hash corto del commit actual
+                git_tag = subprocess.check_output(
+                    ["git", "rev-parse", "--short", "HEAD"]
+                ).decode().strip()
+
+            # Intentar obtener también la rama actual (opcional)
+            try:
+                git_branch = subprocess.check_output(
+                    ["git", "rev-parse", "--abbrev-ref", "HEAD"]
+                ).decode().strip()
+            except subprocess.CalledProcessError:
+                git_branch = "unknown"
+
+            # Descripción del experimento
+            self.experiment_description = (
+                "FlexSAIze Layout Regression - entrenamiento de modelos de banners"
+            )
+
+            # Tags de MLflow
             self.experiment_tags = {
                 "project_name": "flexsaize",
                 "module": "layout-regression",
                 "team": "mna-team",
+                "git_branch": git_branch,
+                "dataset_version": git_tag,
                 "mlflow.note.content": self.experiment_description,
             }
+
 
 class RFRegressorTrainer:
     def __init__(self, cfg: TrainConfig):
