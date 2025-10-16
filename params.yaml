@@ -1,0 +1,12 @@
+train:
+  model_type: RandomForest
+  # Definimos una clave para almacenar todos los hyperparams del modelo activo
+  active_hyperparams:
+    RandomForest:
+      n_estimators: 100
+      max_depth: 10
+      random_state: 42
+    XGBoost:
+      n_estimators: 200
+      learning_rate: 0.05
+      max_depth: 5

@@ -1,9 +1,33 @@
 import argparse
+import yaml
 import json
 import mlflow
 import os
 from dotenv import load_dotenv
-from flexsaize.models.model_trainer import ModelTrainer
+from flexsaize.train.model_trainer import ModelTrainer
+
+def get_active_hyperparams(model_type, params_file='params.yaml'):
+    """
+    Lee params.yaml y extrae el diccionario de hyperparams del modelo activo.
+    """
+    
+    # 1. Leer el archivo YAML
+    try:
+        with open(params_file, 'r') as f:
+            params = yaml.safe_load(f)
+    except FileNotFoundError:
+        raise FileNotFoundError(f"Error: El archivo de parámetros '{params_file}' no fue encontrado.")
+    except yaml.YAMLError as e:
+        raise ValueError(f"Error: El archivo de parámetros '{params_file}' tiene un formato YAML inválido. Detalle: {e}")
+    
+    # 2. Intentar extraer los hyperparams del modelo específico
+    try:
+        # Navegamos a la sección 'active_hyperparams' y luego al 'model_type'
+        hyperparams_dict = params['train']['active_hyperparams'][model_type]
+        return hyperparams_dict
+    except KeyError as e:
+        # Se lanza si 'train', 'active_hyperparams', o 'model_type' no existen
+        raise ValueError(f"Error: El modelo '{model_type}' o la estructura 'train.active_hyperparams' no está definida en '{params_file}'.")
 
 def main():
 
@@ -23,18 +47,19 @@ def main():
                         help="Columnas objetivo que el modelo va a predecir")
     parser.add_argument("--model-type", type=str, required=True,
                         help="Nombre del modelo que se quiere entrenar")
-    parser.add_argument("--hyperparams", type=str, required=True,
-                        help="Diccionario de hiperparámetros del modelo")
     
     # Aquí creamos el objeto args
     args = parser.parse_args()
     args.target_col = args.target_col.split(',')
 
-    # Intentamos cargar la cadena JSON como un diccionario
     try:
-        args.hyperparams = json.loads(args.hyperparams) # Transforma la cadena JSON en dict
-    except json.JSONDecodeError as e:
-        print(f"ERROR: El argumento --hyperparams no es un JSON válido. Detalle: {e}")
+        # Obtener los hiperparámetros correctos del params.yaml
+        args.hyperparams = get_active_hyperparams(args.model_type)
+        
+    except (FileNotFoundError, ValueError) as e:
+        print(f"ERROR FATAL DE CONFIGURACIÓN: {e}")
+        # Detenemos la ejecución si no se pudo cargar la configuración de hyperparams
+        return # Salimos de la función main()
 
     # FUERZA LA URI DE SEGUIMIENTO DENTRO DEL SCRIPT
     mlflow.set_tracking_uri(tracking_uri)
@@ -46,12 +71,12 @@ def main():
     with mlflow.start_run(run_name="Models_Training_Stage") as run:
 
         # Registrar la configuración usada
-        mlflow.log_params(vars(args))
+        mlflow.log_params(args.hyperparams)
 
-        # El objeto 'args' (que contiene input_path y output_path) es nuestro 'config'
-        preprocessor = ModelTrainer(config=args)
+        trainer = ModelTrainer(config=args)
+
         # Ejecutar el pipeline completo
-        preprocessor.run()
+        trainer.run()
 
 if __name__ == "__main__":
     main()
