@@ -1,27 +1,23 @@
 schema: '2.0'
 stages:
   preprocess:
-    cmd: python scripts/run_preprocess.py --input data/data.csv --output 
-      data/data_clean.csv
+    cmd: python scripts/run_preprocess.py --input-path data/data.csv 
+      --output-path data/data_clean.csv
     deps:
     - path: data/data.csv
       hash: md5
-      md5: f305ffec79c36cef537cf52d6100d44c
-      size: 71872
+      md5: a0179f890fee5507ca5fdb95c90ef878
+      size: 86516
     - path: scripts/run_preprocess.py
       hash: md5
-      md5: 80e0d7250a459ea5946aa6b43e9ae521
-      size: 498
+      md5: 8946af5462958ede1b7eba3cc1a69cd5
+      size: 1212
     - path: src/flexsaize/data/preprocessor.py
       hash: md5
-      md5: 340979e24834629d628bdf76954f1d41
-      size: 5429
+      md5: 96d1a17342635db541cdffd455b0b90e
+      size: 2076
     outs:
     - path: data/data_clean.csv
       hash: md5
-      md5: 2ce9bff373e18cf8736d19df1378ca9f
-      size: 141443
-    - path: data/data_clean_withmeta.csv
-      hash: md5
-      md5: d96f146f49ffc57cae7d40946904372f
-      size: 153025
+      md5: 3d75724c9203afd60443d36a76bc03ef
+      size: 87423
