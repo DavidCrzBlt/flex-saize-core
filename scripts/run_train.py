@@ -90,6 +90,22 @@ def main():
         # Ejecutar el pipeline completo
         trainer.run()
 
+        # -----------------------------------------------------------------
+        # 💾 Guardar el modelo entrenado localmente para versionar con DVC
+        # -----------------------------------------------------------------
+        import joblib
+        os.makedirs("models", exist_ok=True)
+
+        model_path = f"models/{args.model_type}_{timestamp}.pkl"
+        if hasattr(trainer, "model") and trainer.model is not None:
+            joblib.dump(trainer.model, model_path)
+            print(f"✅ Modelo guardado en: {model_path}")
+
+            # Registrar también en MLflow
+            mlflow.log_artifact(model_path, artifact_path="model")
+        else:
+            print("⚠️ No se encontró modelo entrenado para guardar.")
+
 if __name__ == "__main__":
     main()
     

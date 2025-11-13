@@ -16,7 +16,9 @@ def main():
                         help="Ruta al archivo de datos crudos")
     parser.add_argument("--output-path", type=str, required=True,
                         help="Ruta donde se guardara el archivo limpio")
-    
+    parser.add_argument("--output-path-transformers", type=str, required=True,
+                        dest="transformers_path",
+                        help="Ruta donde se guardaran los transformers limpios")
     # Aquí creamos el objeto args
     args = parser.parse_args()
 
@@ -25,6 +27,7 @@ def main():
 
     # Si el experimento no existe, MLflow lo crea automáticamente.
     mlflow.set_experiment("Flexsaize_Preprocessing_Pipeline")
+
 
     # Esto envuelve todo el trabajo de preprocesamiento en un registro de MLflow
     with mlflow.start_run(run_name="Data_Preprocess_Stage") as run:
@@ -40,6 +43,18 @@ def main():
         # Registrar la métrica final si se calculó
         mlflow.log_metric("final_dataset_rows", preprocessor.df.shape[0])
 
+        mlflow.log_artifacts(args.transformers_path, artifact_path="preprocessor_recipe")
+
+        # Registrar la métrica final si se calculó
+        if preprocessor.df is not None and not preprocessor.df.empty:
+            mlflow.log_metric("final_dataset_rows", preprocessor.df.shape[0])
+        else:
+            print("No se registraron métricas, el DataFrame está vacío.")
+
+        print(f"Subiendo artefactos desde {args.transformers_path}...")
+        mlflow.log_artifacts(args.transformers_path, artifact_path="preprocessor_recipe")
+        
+        print("¡Run de preprocesamiento completado y artefactos logueados!")
+
 if __name__ == "__main__":
     main()
-    

@@ -1,12 +1,13 @@
 stages:
   preprocess:
-    cmd: python scripts/run_preprocess.py --input-path data/data.csv --output-path data/data_clean.csv
+    cmd: python scripts/run_preprocess.py --input-path data/data.csv --output-path data/data_clean.csv --output-path-transformers data/temp_transformers/
     deps:
     - data/data.csv
     - src/flexsaize/data/preprocessor.py
     - scripts/run_preprocess.py
     outs:
     - data/data_clean.csv
+    - data/temp_transformers/
   
   split:
     cmd: python scripts/run_split.py --input-path-clean data/data_clean.csv --output-path-train data/train.csv --output-path-val data/val.csv --output-path-test data/test.csv --group-column file --test-size 0.1 --val-size 0.1
@@ -36,4 +37,6 @@ stages:
     params:
       - train.active_hyperparams
       - train.model_type
+    outs:
+      - models/
 

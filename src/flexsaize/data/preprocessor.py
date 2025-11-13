@@ -3,7 +3,8 @@ from sklearn.preprocessing import FunctionTransformer
 from sklearn.preprocessing import PowerTransformer
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import MinMaxScaler
-
+import pickle
+import os
 
 class DataPreprocessor:
     '''
@@ -21,6 +22,7 @@ class DataPreprocessor:
         '''
         self.input_path = config.input_path
         self.output_path = config.output_path
+        self.transformers_path = config.transformers_path
         self.df = None
         self.le = {} # Diccionario de Label Encoder
         self.ptfs = {} # Diccionario de Power Transformer
@@ -204,6 +206,29 @@ class DataPreprocessor:
             print(f"Falló el MinMax Scaler en las columnas {cols_to_transform}: {e}")
 
         return self
+    
+    def save_transformers(self):
+        '''
+        Guarda los transformadores "fiteados" en archivos pickle
+        '''
+        if self.transformers_path:
+            os.makedirs(self.transformers_path, exist_ok=True)
+            
+            with open(os.path.join(self.transformers_path, "label_encoders.pkl"), "wb") as f:
+                pickle.dump(self.le, f)
+            
+            with open(os.path.join(self.transformers_path, "power_transformers.pkl"), "wb") as f:
+                pickle.dump(self.ptfs, f)
+                
+            with open(os.path.join(self.transformers_path, "scalers.pkl"), "wb") as f:
+                pickle.dump(self.scaler, f)
+                
+            print(f"Transformadores guardados en {self.transformers_path}")
+        else:
+            print("ADVERTENCIA: 'transformers_path' no definido. No se guardan los transformadores.")
+            
+        return self
+
 
     def save(self):
         '''
@@ -243,6 +268,10 @@ class DataPreprocessor:
         # Guardado 
         if self.df is not None and not self.df.empty:
             self.save()
+
+        if self.df is not None and not self.df.empty:
+            self.save_transformers()
+
         else:
             # Manejo de error si el DF quedó vacío por limpieza
             print("ERROR: DataFrame vacío. No se guarda el archivo de salida.")
