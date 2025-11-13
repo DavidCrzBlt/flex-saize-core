@@ -15,6 +15,9 @@ MODEL_CLASSES = {
 
 # Para modelos Multi-Output, este es el MultiOutputRegressor CLASE.
 MODEL_MAPPER = {
-    "RandomForest": RandomForestRegressor,      # Soporte nativo
-    "XGBoost": MultiOutputRegressor,             # Usamos la CLASE MultiOutputRegressor
+    "DecisionTree": MultiOutputRegressor,
+    "RandomForest": RandomForestRegressor,              # Soporte multi-output nativo
+    "HGB Regressor": HistGradientBoostingRegressor,             # Soporte multi-output nativo
+    "XGBoost": MultiOutputRegressor,   # Necesita wrapper
+    "SVR": MultiOutputRegressor, 
 }
