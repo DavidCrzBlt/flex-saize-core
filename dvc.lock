@@ -11,8 +11,8 @@ stages:
       size: 86516
     - path: scripts/run_preprocess.py
       hash: md5
-      md5: d18f1cfdcf5d1ca4a4b8e46fe40d32bc
-      size: 2458
+      md5: 602799b08271de1ad628a58f7ead9555
+      size: 4154
     - path: src/flexsaize/data/preprocessor.py
       hash: md5
       md5: 366419147abb9f0d4a9e506e2e9978cf
@@ -57,7 +57,7 @@ stages:
   train:
     cmd: "python scripts/run_train.py --input-path-train data/train.csv --input-path-val
       data/val.csv --input-path-test data/test.csv --target-col x,y,width,height --model-type
-      StackingV2\n"
+      XGBoost\n"
     deps:
     - path: data/test.csv
       hash: md5
@@ -73,16 +73,16 @@ stages:
       size: 15157
     - path: scripts/run_train.py
       hash: md5
-      md5: 9094e08d85f118d81e4f13d5c2cb77fd
-      size: 3875
+      md5: 4e3f85d6086897916ff31a61b175d355
+      size: 4632
     - path: src/flexsaize/models/model_config.py
       hash: md5
       md5: 8c900fb6ab7301b96c54bec33ed6c73d
       size: 1018
     - path: src/flexsaize/train/model_trainer.py
       hash: md5
-      md5: 690473c6b45ecbf39b49cbc720de70d6
-      size: 11382
+      md5: 11eec3dcd82643258f335f646e4bca42
+      size: 11573
     params:
       params.yaml:
         train.active_hyperparams:
@@ -96,4 +96,19 @@ stages:
             max_depth: 10
           SVR:
             C: 1.0
-        train.model_type: StackingV2
+          StackingV2:
+            rf__n_estimators: 200
+            xgb__n_estimators: 300
+            svr__C: 1.0
+            svr__kernel: rbf
+            final__n_estimators: 200
+          HGB Regressor:
+            learning_rate: 0.1
+            max_depth: 10
+        train.model_type: XGBoost
+    outs:
+    - path: models/
+      hash: md5
+      md5: e754536e239f0e37338fca205fee1a38.dir
+      size: 4028135
+      nfiles: 1

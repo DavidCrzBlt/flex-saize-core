@@ -8,6 +8,43 @@ def main():
 
     # Cargamos la variable de entorno
     load_dotenv()
+    
+    required_envs = [
+        "MLFLOW_TRACKING_URI",
+        "MLFLOW_S3_ENDPOINT_URL",
+        "AWS_ACCESS_KEY_ID",
+        "AWS_SECRET_ACCESS_KEY"
+    ]
+
+    for var in required_envs:
+        value = os.getenv(var)
+        if not value:
+            print(f"⚠️ Advertencia: variable {var} no encontrada en .env")
+        else:
+            os.environ[var] = value
+
+    print("\n--- DEBUG DE MLFLOW ---")
+    
+    tracking_uri = os.environ.get("MLFLOW_TRACKING_URI")
+
+    if tracking_uri:
+        print(f"✅ Variable de entorno encontrada: MLFLOW_TRACKING_URI = {tracking_uri}")
+    else:
+        print("❌ ERROR: ¡No se encontró la variable MLFLOW_TRACKING_URI en tu .env!")
+        print("    Asegúrate que el archivo .env esté en la raíz del proyecto (donde corres 'dvc').")
+        return # Salir si no hay URI
+
+    try:
+        mlflow.set_tracking_uri(tracking_uri)
+        print(f"✅ MLflow URI configurada en: {mlflow.get_tracking_uri()}")
+        print(f"📦 Artifact store: {os.getenv('MLFLOW_S3_ENDPOINT_URL')}")
+
+    except Exception as e:
+        print(f"❌ ERROR al configurar la URI de MLflow: {e}")
+        return
+        
+    print("--- FIN DEBUG ---")
+    # --- FIN DEL BLOQUE DE DEBUG ---
     tracking_uri = os.environ.get("MLFLOW_TRACKING_URI")
 
     # Agregamos los parámetros de nuestra clase
@@ -28,6 +65,7 @@ def main():
     # Si el experimento no existe, MLflow lo crea automáticamente.
     mlflow.set_experiment("Flexsaize_Preprocessing_Pipeline")
 
+    print("📦 Artifact store endpoint:", os.getenv("MLFLOW_S3_ENDPOINT_URL"))
 
     # Esto envuelve todo el trabajo de preprocesamiento en un registro de MLflow
     with mlflow.start_run(run_name="Data_Preprocess_Stage") as run:
@@ -43,8 +81,6 @@ def main():
         # Registrar la métrica final si se calculó
         mlflow.log_metric("final_dataset_rows", preprocessor.df.shape[0])
 
-        mlflow.log_artifacts(args.transformers_path, artifact_path="preprocessor_recipe")
-
         # Registrar la métrica final si se calculó
         if preprocessor.df is not None and not preprocessor.df.empty:
             mlflow.log_metric("final_dataset_rows", preprocessor.df.shape[0])
@@ -52,7 +88,15 @@ def main():
             print("No se registraron métricas, el DataFrame está vacío.")
 
         print(f"Subiendo artefactos desde {args.transformers_path}...")
-        mlflow.log_artifacts(args.transformers_path, artifact_path="preprocessor_recipe")
+        try:
+            print(f"Subiendo artefactos (receta) desde {args.transformers_path}...")
+            mlflow.log_artifacts(args.transformers_path, artifact_path="preprocessor_recipe")
+            print("✅ ¡Artefactos logueados exitosamente!")
+            
+        except Exception as e:
+            # Si falla, esto nos dirá por qué (ej. "Conexión rechazada")
+            print(f"❌ ERROR AL SUBIR ARTEFACTOS: {e}")
+            print("    Revisa la conexión de red con la RPi y los permisos del artifact store.")
         
         print("¡Run de preprocesamiento completado y artefactos logueados!")
 
