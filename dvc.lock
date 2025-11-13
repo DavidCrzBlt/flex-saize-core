@@ -51,7 +51,7 @@ stages:
   train:
     cmd: "python scripts/run_train.py --input-path-train data/train.csv --input-path-val
       data/val.csv --input-path-test data/test.csv --target-col x,y,width,height --model-type
-      RandomForest\n"
+      SVR\n"
     deps:
     - path: data/test.csv
       hash: md5
@@ -90,4 +90,4 @@ stages:
             max_depth: 10
           SVR:
             C: 1.0
-        train.model_type: RandomForest
+        train.model_type: SVR
