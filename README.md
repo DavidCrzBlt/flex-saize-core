@@ -94,6 +94,52 @@ python scripts/run_train.py --input data/data_clean.csv
 
 ---
 
+## 🚀 Workflow Summary
+1. Raw CSVs are stored in Raspberry Pi under `/data/lake/raw`.
+2. Using `dvc import` or `dvc pull`, the selected dataset version is synced to the local machine.
+3. Run `dvc repro` to:
+   - Preprocess data (`run_preprocess.py`)
+   - Train and evaluate model (`run_train.py`)
+   - Log metrics and artifacts to MLflow.
+4. Results are tracked and visualized in the MLflow UI.
+
+---
+
+## 💻 Running MLflow Tracking Server
+
+### On Raspberry Pi:
+```bash
+#!/bin/bash
+export MLFLOW_TRACKING_URI=/home/DavidPi/Documents/Proyectos/flexsaize_mlflow_lab/mlruns
+mlflow server \
+    --backend-store-uri sqlite:///mlflow.db \
+    --default-artifact-root /home/DavidPi/Documents/Proyectos/flexsaize_mlflow_lab/mlruns \
+    --host 0.0.0.0 \
+    --port 5000
+```
+Or save it as `run_mlflow_server.sh` and execute:
+```bash
+bash run_mlflow_server.sh
+```
+
+### On Local Machine (Windows)
+Set the tracking URI before running experiments:
+
+**PowerShell:**
+```powershell
+$env:MLFLOW_TRACKING_URI = "http://192.168.100.8:5000"
+```
+
+**Command Prompt:**
+```cmd
+set MLFLOW_TRACKING_URI=http://192.168.100.8:5000
+```
+
+Access MLflow UI at:
+👉 [http://192.168.100.8:5000](http://192.168.100.8:5000)
+
+---
+
 ## 📊 Experiment Tracking
 Los experimentos se registran automáticamente en MLflow.  
 Ejemplo de dashboard:
