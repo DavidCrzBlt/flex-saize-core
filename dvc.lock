@@ -71,8 +71,8 @@ stages:
       size: 3875
     - path: src/flexsaize/models/model_config.py
       hash: md5
-      md5: 89bdfa6e7a3affc55eb8db9ef9fcc31f
-      size: 728
+      md5: ddb61ba246cc0511a2db17a6f5e81d52
+      size: 892
     - path: src/flexsaize/train/model_trainer.py
       hash: md5
       md5: 11eec3dcd82643258f335f646e4bca42
@@ -81,11 +81,13 @@ stages:
       params.yaml:
         train.active_hyperparams:
           RandomForest:
-            n_estimators: 100
-            max_depth: 10
+            n_estimators: 300
+            max_depth: 15
             random_state: 42
           XGBoost:
-            n_estimators: 200
+            n_estimators: 400
             learning_rate: 0.05
-            max_depth: 5
+            max_depth: 10
+          SVR:
+            C: 1.0
         train.model_type: RandomForest
