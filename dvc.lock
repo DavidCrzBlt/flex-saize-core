@@ -2,7 +2,8 @@ schema: '2.0'
 stages:
   preprocess:
     cmd: python scripts/run_preprocess.py --input-path data/data.csv 
-      --output-path data/data_clean.csv
+      --output-path data/data_clean.csv --output-path-transformers 
+      data/temp_transformers/
     deps:
     - path: data/data.csv
       hash: md5
@@ -10,17 +11,22 @@ stages:
       size: 86516
     - path: scripts/run_preprocess.py
       hash: md5
-      md5: c25166959e7d9f19b7c2dca161a7684c
-      size: 1606
+      md5: d18f1cfdcf5d1ca4a4b8e46fe40d32bc
+      size: 2458
     - path: src/flexsaize/data/preprocessor.py
       hash: md5
-      md5: eb6770d005d981bfdb8010ef899cc839
-      size: 9946
+      md5: 366419147abb9f0d4a9e506e2e9978cf
+      size: 11065
     outs:
     - path: data/data_clean.csv
       hash: md5
       md5: 29903640b1a11d97d1e2872ec864dbb1
       size: 176052
+    - path: data/temp_transformers/
+      hash: md5
+      md5: e10c40c2ed972a5d419e9f1214e43384.dir
+      size: 2175
+      nfiles: 3
   split:
     cmd: python scripts/run_split.py --input-path-clean data/data_clean.csv 
       --output-path-train data/train.csv --output-path-val data/val.csv 
@@ -51,7 +57,7 @@ stages:
   train:
     cmd: "python scripts/run_train.py --input-path-train data/train.csv --input-path-val
       data/val.csv --input-path-test data/test.csv --target-col x,y,width,height --model-type
-      SVR\n"
+      StackingV2\n"
     deps:
     - path: data/test.csv
       hash: md5
@@ -71,12 +77,12 @@ stages:
       size: 3875
     - path: src/flexsaize/models/model_config.py
       hash: md5
-      md5: ddb61ba246cc0511a2db17a6f5e81d52
-      size: 892
+      md5: 8c900fb6ab7301b96c54bec33ed6c73d
+      size: 1018
     - path: src/flexsaize/train/model_trainer.py
       hash: md5
-      md5: 11eec3dcd82643258f335f646e4bca42
-      size: 11573
+      md5: 690473c6b45ecbf39b49cbc720de70d6
+      size: 11382
     params:
       params.yaml:
         train.active_hyperparams:
@@ -90,4 +96,4 @@ stages:
             max_depth: 10
           SVR:
             C: 1.0
-        train.model_type: SVR
+        train.model_type: StackingV2

@@ -4,3 +4,7 @@ myvirtualenv/
 *.egg-info/
 variables.txt
 .env
+data/
+models/
+
+
