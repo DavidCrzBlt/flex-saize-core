@@ -77,8 +77,8 @@ stages:
       size: 4632
     - path: src/flexsaize/models/model_config.py
       hash: md5
-      md5: e7c140dfe3dbe7d6de24e333d686306f
-      size: 1194
+      md5: 4234bf592bdb8a7c3119daf1a04d94dc
+      size: 1137
     - path: src/flexsaize/train/model_trainer.py
       hash: md5
       md5: 8e315456febf8821e4b72e51752ad271
@@ -127,6 +127,6 @@ stages:
     outs:
     - path: models/
       hash: md5
-      md5: aca9b6b81e9ac0139635ef5e29dc7798.dir
-      size: 29871109
+      md5: 5162dc880bb1deeb9d5814253bba2353.dir
+      size: 29840421
       nfiles: 1

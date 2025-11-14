@@ -5,7 +5,7 @@ import mlflow
 from sklearn.metrics import r2_score, root_mean_squared_error, mean_absolute_error
 from sklearn.multioutput import MultiOutputRegressor
 
-from flexsaize.models.model_config import MODEL_MAPPER, MODEL_CLASSES
+from ..models.model_config import MODEL_MAPPER, MODEL_CLASSES
 
 class ModelTrainer:
     def __init__(self, config):

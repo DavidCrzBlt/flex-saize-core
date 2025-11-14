@@ -1,5 +1,5 @@
 train:
-  model_type: XGBoost
+  model_type: StackingModel
   # Definimos una clave para almacenar todos los hyperparams del modelo activo
   active_hyperparams:
     RandomForest:
@@ -12,13 +12,31 @@ train:
       max_depth: 10
     SVR:
       C: 1.0
-    StackingV2:
-      rf__n_estimators: 200
-      xgb__n_estimators: 300
-      svr__C: 1.0
-      svr__kernel: "rbf"
-      final__n_estimators: 200
+    StackingModel:
+      base_models:
+        rf:
+          model: RandomForest
+          params:
+            n_estimators: 200
+        xgb:
+          model: XGBoost
+          params:
+            n_estimators: 300
+        svr:
+          model: SVR
+          params:
+            C: 1.0
+      final_model:
+        model: XGBoost
+        params:
+          n_estimators: 200
+          n_jobs: -1
     HGB Regressor:
       learning_rate: 0.1
       max_depth: 10
-      
+    LightGBM:
+      learning_rate: 0.05
+      max_depth: 10
+      n_estimators: 400
+      random_state: 42
+

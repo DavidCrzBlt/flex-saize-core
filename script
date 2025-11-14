@@ -1,0 +1,8 @@
+Primero necesitamos levantar MLflow en la raspi con
+bash run_mlflow_server.sh
+
+Luego en otra terminal levantamos minio con estos comandos
+
+MINIO_ROOT_USER=minio \
+MINIO_ROOT_PASSWORD=minio123 \
+minio server /home/DavidPi/minio_data --console-address ":9001"
