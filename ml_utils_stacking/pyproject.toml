@@ -1,0 +1,10 @@
+[project]
+name = "ml-utils-stacking"
+version = "0.1.0"
+description = "Factory para ensamblar modelos y stacking"
+authors = [{name="David"}]
+dependencies = []
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"

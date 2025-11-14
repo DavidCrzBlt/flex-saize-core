@@ -1,0 +1,2 @@
+MODEL_CLASSES = {}
+MODEL_MAPPER = {}
