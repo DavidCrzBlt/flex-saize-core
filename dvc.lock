@@ -57,7 +57,7 @@ stages:
   train:
     cmd: "python scripts/run_train.py --input-path-train data/train.csv --input-path-val
       data/val.csv --input-path-test data/test.csv --target-col x,y,width,height --model-type
-      XGBoost\n"
+      StackingModel\n"
     deps:
     - path: data/test.csv
       hash: md5
@@ -77,12 +77,12 @@ stages:
       size: 4632
     - path: src/flexsaize/models/model_config.py
       hash: md5
-      md5: 8c900fb6ab7301b96c54bec33ed6c73d
-      size: 1018
+      md5: e7c140dfe3dbe7d6de24e333d686306f
+      size: 1194
     - path: src/flexsaize/train/model_trainer.py
       hash: md5
-      md5: 11eec3dcd82643258f335f646e4bca42
-      size: 11573
+      md5: 8e315456febf8821e4b72e51752ad271
+      size: 11565
     params:
       params.yaml:
         train.active_hyperparams:
@@ -96,19 +96,37 @@ stages:
             max_depth: 10
           SVR:
             C: 1.0
-          StackingV2:
-            rf__n_estimators: 200
-            xgb__n_estimators: 300
-            svr__C: 1.0
-            svr__kernel: rbf
-            final__n_estimators: 200
+          StackingModel:
+            base_models:
+              rf:
+                model: RandomForest
+                params:
+                  n_estimators: 200
+              xgb:
+                model: XGBoost
+                params:
+                  n_estimators: 300
+              svr:
+                model: SVR
+                params:
+                  C: 1.0
+            final_model:
+              model: XGBoost
+              params:
+                n_estimators: 200
+                n_jobs: -1
           HGB Regressor:
             learning_rate: 0.1
             max_depth: 10
-        train.model_type: XGBoost
+          LightGBM:
+            learning_rate: 0.05
+            max_depth: 10
+            n_estimators: 400
+            random_state: 42
+        train.model_type: StackingModel
     outs:
     - path: models/
       hash: md5
-      md5: d3669a5ea6b65379059d35e2c343c740.dir
-      size: 4028135
+      md5: aca9b6b81e9ac0139635ef5e29dc7798.dir
+      size: 29871109
       nfiles: 1
